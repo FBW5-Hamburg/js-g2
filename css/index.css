@@ -4,25 +4,38 @@
 }
 .container{
   position: relative;
+
   
 }
 .container>canvas:nth-child(1){
     position: absolute;
     top: 0;
     left: 0;
-    z-index: 0;
+    z-index: 1;
     /* width: 100vw;
     height: 100vh; */
-    background-image: url('../img/space.jpg');
-  background-size: cover;
+       background-image: url('../img/parallax_background.gif');
+  background-size: cover; 
+    
+
 
 }
-/* .container>canvas:nth-child(2){
+.container>canvas:nth-child(2){
   position: absolute;
   top: 0;
   left: 0;
+  z-index: 2;
+  background: transparent;
 
-} */
+}
+.container>canvas:nth-child(3){
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 3;
+  background: transparent;
+
+}
 
 .spaceShip{
    
