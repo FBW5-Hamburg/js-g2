@@ -1,27 +1,55 @@
 var enemies = []
+var laserArr=[]
+var status = false
 
 window.onload = function(){
- 
+ //get container bei id 
 let container=document.querySelector('.container')
-///////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+let exploionsound = document.createElement("audio")
+exploionsound.src = './audi/Explosion+5.mp3'
+exploionsound.setAttribute("preload","auto")
+exploionsound.setAttribute("controls","none")
+exploionsound.style.display ="none"
+container.append(exploionsound)
+if(status==true){
+  exploionsound.play()
+}
+
+/////////////////////////////////////////////
 //declering layer1 canvas
 let gameCanvas = document.querySelector('#gameCanvas')
 let context = gameCanvas.getContext('2d')
- ////////////////////////////////////////////////////
-let gameCanvas2 = document.querySelector('#gameCanvas2')
-let context2 = gameCanvas2.getContext('2d')
-///////////////////////////////////////////
+/////////////////////////////////////////////////////////
+//declering layer3 canvas
 let gameCanvas3 = document.querySelector('#gameCanvas3')
 let context3 = gameCanvas3.getContext('2d')
-//////////////////////////////////////////////////////////////////////7
-    //creat laser sound
-let sound = document.createElement("audio")
-sound.src = './audi/heat-vision.mp3'
-sound.setAttribute("preload","auto")
-sound.setAttribute("controls","none")
-sound.style.display ="none"
-container.append(sound)
+ ////////////////////////////////////////////////////
+ //declering layer2 canvas
+let gameCanvas2 = document.querySelector('#gameCanvas2')
+let context2 = gameCanvas2.getContext('2d')
+///////////////////////////////////////////////////////////
+    //declaring laser sound
+    let sound = document.createElement("audio")
+    sound.src = './audi/heat-vision.mp3'
+    sound.setAttribute("preload","auto")
+    sound.setAttribute("controls","none")
+    sound.style.display ="none"
+    container.append(sound)
+
+///////////////////////////////////////////
+
+let startBtn =document.querySelector('#startBtn')
+startBtn.addEventListener('click',function (e) {
+  startBtn.classList.add('startBtn')
+
+//////////////////////////////////////////////////////////////////////
+//declering explosion img  
+let explogenImg  = document.createElement('img')
+explogenImg.src ='./img/explosion0.png'
+
 ////////////////////////////////////////////////////////////////////////
+//declaring space ship image 
 
 let spacrShipImg  = document.createElement('img')
 spacrShipImg.src ='./img/ship2.png'
@@ -30,18 +58,17 @@ gameCanvas3.onmousemove = e=>{
 spaceshipCreator(spacrShipImg,context,sound,context,e.pageX,e.pageY)
 } }
 /////////////////////////////////////////////////////////////////////
+//declaring enemy image
 let enemyimg =document.createElement('img')
 enemyimg.src ='./img/ship4.png'
 enemyimg.onload = () =>{
   setInterval(() => {
   let x = Math.floor(Math.random() * Math.floor(960));
   enemycreator(enemyimg,context2, x)
-      }, 1000);
-      
-    }
-    
-   
-     
+      }, 1500);
+}  
+})
+ 
 }
 //////////////////////////////////////////////////////////////////////////////////////////
  //creat spaceship function 
@@ -50,22 +77,21 @@ if (true) {
         ctx.clearRect(0,0,1000,500)
         ctx.drawImage(img,40,30,300,200,x,y,40,30)    
        }
-   //////////////////////////////////////////////////////////////   
-   //caling laser shoot function + add Event 
+//////////////////////////////////////////////////////////////   
+//caling laser shoot function + add Event 
    document.onclick =(e=>{
     LaserShoot(e.pageX,e.pageY,ctx2)
- /////////////////////////////////////////////////////////////////////   
+    ////////////////////////////// 
   // LaserShoot(e.pageX-5,e.pageY-5,ctx2)
     sound.currentTime =0;
-    sound.play()})
+    sound.play()
+  }
+    )
   }
 /////////////////////////////////////////////////////////////////////
 //laser shoot +laser sound
-let status='notexplotion'
+
 function LaserShoot(laserX,laserY,ctx) {
-  
-  console.log(status);
-  
 let laserCaunter = laserY
 let laserInterval = setInterval(() => {
   if (laserCaunter ==0) {
@@ -81,14 +107,6 @@ ctx.stroke();
 //calling checkExplosion function 
   
  checkExplosion(enemies,laserX,laserY)
- if (status=='explotion') {
-   setTimeout(()=>{
-    status='notexplotion'
-   },50)
-   console.log(status);
-   
- }
-
       }, 50);
 
    }
@@ -128,19 +146,19 @@ for (let i = 0; i < array.length; i++) {
   let enY = array[i].y
   let topLeftCornerCheck = checkInside(enX , enY ,enWidth, enHeight, laserX, laserY)
   let topRightCornerCheck = checkInside(enX , enY ,enWidth, enHeight, laserX + laserWidth, laserY)
-  // let buttomRightCornerCheck = checkInside(enX , enY ,enWidth, enHeight, laserX + laserWidth, laserY + laserHeight)
-  // let buttomLeftCornerCheck = checkInside(enX , enY ,enWidth, enHeight, laserX , laserY + laserHeight)
-  if(topLeftCornerCheck || topRightCornerCheck){
+  let buttomRightCornerCheck = checkInside(enX , enY ,enWidth, enHeight, laserX + laserWidth, laserY + laserHeight)
+  let buttomLeftCornerCheck = checkInside(enX , enY ,enWidth, enHeight, laserX , laserY + laserHeight)
+  if(topLeftCornerCheck || topRightCornerCheck||buttomRightCornerCheck||buttomLeftCornerCheck){
   
     array.splice(i,1)
-    status=='explotion'
-    console.log(status);
-    
-    
-
-
+  
+    status =true
   } 
-   
+  setTimeout(()=>{
+    status =false
+  },1000)
+  console.log(status);
+  
  }   
 }
 
@@ -149,22 +167,31 @@ function checkInside(enX , enY ,enWidth, enHeight, pointX , pointY ){
 return (pointX >= enX && pointX <= enX + enWidth) && (pointY >= enY && pointY <= enY + enHeight )
     }
 ///////////////////////////////////////////////////////////
-// function drawExplosion(src,context3 , x, y) {
-//   let img  = document.createElement('img')
-//   img.src =src
-//   img.onload = function () {
-// context3.clearRect(x,y,70,50)
-//   context3.drawImage(img,0,0,200,100,x,y,70,50)
-//   clearInterval(laserInterval)
-//   clearInterval(enemyInterval)
-//    setTimeout(() => {
-//     context3.clearRect(x,y,70,50)
-//     status='notExplosion'
-//    }, 1000);
-          
-//   }
-// }
 
+
+function drawExplosion(img,context3,x,y) {
+  
+  img.onload = function () {
+
+  context3.clearRect(x,y,70,50)
+  context3.drawImage(img,0,0,200,100,x,y,70,50)
+  clearInterval(laserInterval)
+  clearInterval(enemyInterval)
+  setTimeout(() => {
+    context3.clearRect(x,y,70,50)
+   }, 1000);
+          
+  }
+}
+////////////////////////////////////////
+// function exploSaund(exploionsound,status) {
+//   if (status==true){
+//     exploionsound.currentTime =0;
+//     exploionsound.play()
+//     log
+//   }
+  
+// }
 /////////////////////////////////////////////////////////////////
 // function checkExplosion (laserX,laserY,enX,enY) {
       
