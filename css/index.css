@@ -4,9 +4,10 @@
 }
 .container{
   position: relative;
-
+ 
   
 }
+
 .container>canvas:nth-child(1){
     position: absolute;
     top: 0;
@@ -14,7 +15,7 @@
     z-index: 1;
     /* width: 100vw;
     height: 100vh; */
-       background-image: url('../img/parallax_background.gif');
+      background-image: url('../img/parallax_background.gif');
   background-size: cover; 
     
 
@@ -37,4 +38,30 @@
 
 }
 
+.score{
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  border:  3px solid white ;
+  z-index: 4;
+  width: 60px;
+  height: 20px;
+  color: white;
+}
 
+#startBtn{
+  position: absolute;
+  top: 175px;
+  left: 250px;
+  width: 500px;
+  height: 200px;
+  border-radius: 10px;
+  z-index: 6;
+  font-size: 30px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  background-image: url('../img/button.png');
+  background-size: cover;
+}
+.startBtn{
+  display: none;
+}
