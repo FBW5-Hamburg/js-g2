@@ -4,7 +4,7 @@ var explosionenImg = null
 var explosionCtx = null
 var exploionsound = null
 var scoreCounter = 0
-var bullets = []
+var highestScoreArr = []
 var spaceshipCreatorCheck = true
 var enemyShipInterval;
 // var status = false
@@ -13,7 +13,9 @@ window.onload = function () {
   //get container bei id 
   let container = document.querySelector('.container')
   ////////////////////////////////////////////////////////////
-  var score = document.querySelector('#score')
+  let score = document.querySelector('#score')
+  let HScore= document.querySelector('#HScore')
+console.log(score.innerText);
 
 
   /////////////////////////////////////////////
@@ -60,6 +62,7 @@ window.onload = function () {
   // var enemyBullet = document.createElement('img')
   // enemyBullet.src = './img/laser0.png'
   // start button declering + add event listener
+  //////////////////////////////////////////////////////////////
   let startBtn = document.querySelector('#startBtn')
   startBtn.addEventListener('click', function (e) {
     startBtn.classList.add('startBtn')
@@ -83,14 +86,14 @@ window.onload = function () {
     enemyimg.onload = () => {
       enemyShipInterval = setInterval(() => {
         let x = Math.floor(Math.random() * Math.floor(960));
-        enemycreator(enemyimg, context2, x)
-        //  enemyBullets(enemyBullet,context2,x)
+        enemycreator(enemyimg, context2, x,explosionCtx)
+        
       }, 1500);
 
     }
     /////////////////////////////////////////////////////////
 
-
+    
 
     ////////////////////////////////////////////////////////
     let meteoresImg = document.createElement('img')
@@ -170,7 +173,7 @@ function LaserShoot(laserX, laserY, ctx) {
 
 }
 ////////////////////////////////////////////////////////
-function enemycreator(enemyimg, somCtx, enX) {
+function enemycreator(enemyimg, somCtx, enX,ctx) {
 
   enemObj = {
     x: enX,
@@ -188,9 +191,15 @@ function enemycreator(enemyimg, somCtx, enX) {
     if (theEnemy.y == 500) {
       clearInterval(enemyInterval)
     }
-  }, 50);
+   enemyBullets(ctx,theEnemy.x,theEnemy.y)
+  }, 50); 
+
+
+  
   enemies[enemIndex].interval = enemyInterval
+  
 }
+
 //////////////////////////////////////////////////////////////////////////////////
 function meteorCreator(meteoresImg, somCtx, meteorX, meteorY) {
   meteorObj = {
@@ -218,7 +227,7 @@ function meteorCreator(meteoresImg, somCtx, meteorX, meteorY) {
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-function checkExplosion(array, laserX, laserY) {
+function checkExplosion(array,laserX, laserY) {
 
   let enWidth = 50
   let enHeight = 40
@@ -245,6 +254,25 @@ function checkExplosion(array, laserX, laserY) {
 
       scoreCounter = scoreCounter + 1
       score.innerText = scoreCounter
+      //////////////////////////////////////
+      //using local storage to show the hiest score
+      let hsArr=highestScoreArr
+      hsArr.push(score.innerText)
+      console.log(hsArr);
+      let hiScoreJson= JSON.stringify(hsArr)
+      localStorage.setItem('hiScore',hiScoreJson)
+      
+      
+      
+
+    }
+    let jsonObj=localStorage.getItem('hiScore')
+    if (jsonObj!=null) {
+      let convertedArr=this.JSON.parse(jsonObj)
+      console.log(convertedArr.length);
+      
+
+      
     }
 
   }
@@ -283,29 +311,25 @@ function drawExplosion(img, explosionContext, x, y, exploionsound) {
   }, 1000);
   exploionsound.currentTime = 0
   exploionsound.play()
-
 }
-
-
 //////////////////////////////////////////////////////////////////////
-function enemyBullets(enemyBullet, somCtx, bulletX) {
-  meteorObj = {
-    x: bulletX,
-    y: -5,
-    ctx: somCtx
-  }
-  let bulletIndex = bullets.push(meteorObj) - 1
-  let theBullet = bullets[bulletIndex]
+function enemyBullets(somCtx,bulletX,bulletY) {
 
+  
+  let bulletCaunter = bulletY
   let bulletInterval = setInterval(() => {
-
-    theBullet.y += 10
-    somCtx.clearRect(theBullet.x - 20, theBullet.y - 30, 20, 20)
-    somCtx.drawImage(enemyBullet, 0, 0, 100, 100, theBullet.x, theBullet.y, 20, 20)
-    if (theBullet.y == 500) {
+    if (bulletCaunter == 0) {
       clearInterval(bulletInterval)
+    } else {
+      bulletCaunter =bulletCaunter+15
     }
-    bullets[bulletIndex].interval = bulletInterval
+    somCtx.fillStyle = "red"
+    somCtx.clearRect(bulletX + 20, bulletCaunter-50, 5, 5)
+    somCtx.fillRect(bulletX + 20, bulletCaunter+50, 5, 5)
+    somCtx.stroke();
+    //calling checkExplosion function 
 
-  }, 30);
+    // checkExplosion(enemies, laserX, bulletCaunter)
+  }, 20);
+
 }
