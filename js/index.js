@@ -1,9 +1,10 @@
 var enemies = []
+var meteors =[]
 var explosionenImg = null
 var explosionCtx =null
 var exploionsound = null
 var scoreCounter=0
-// var laserArr=[]
+var bullets=[]
 // var status = false
 
 window.onload = function(){
@@ -68,11 +69,49 @@ enemyimg.onload = () =>{
   setInterval(() => {
   let x = Math.floor(Math.random() * Math.floor(960));
   enemycreator(enemyimg,context2, x)
+   enemyBullets(enemyBullet,context2,x)
       }, 2000);
+       
 }  
-})
+/////////////////////////////////////////////////////////
+
+//declaring enemy bullet
+var enemyBullet = document.createElement('img')
+enemyBullet.src = './img/laser0.png'
+
+////////////////////////////////////////////////////////
+let meteoresImg = document.createElement('img')
+meteoresImg.src ='./img/Rock0.png'
+meteoresImg.onload= ()=>{
+  setInterval(() => {
+    let x = Math.floor(Math.random() * Math.floor(960))
+    meteorCreator(meteoresImg,explosionCtx, x,0)
+    
+},7000)
+setInterval(() => {
+  // let x = Math.floor(Math.random() * Math.floor(960))
+  meteorCreator(meteoresImg,explosionCtx, 20,-50)
+  
+},30000)
+setInterval(() => {
+  // let x = Math.floor(Math.random() * Math.floor(960))
+  meteorCreator(meteoresImg,explosionCtx, 600,-100)
+  
+},30000)
+setInterval(() => {
+  // let x = Math.floor(Math.random() * Math.floor(960))
+  meteorCreator(meteoresImg,explosionCtx, 150,-150)
+  
+},30000)
+setInterval(() => {
+  // let x = Math.floor(Math.random() * Math.floor(960))
+  meteorCreator(meteoresImg,explosionCtx, 300,0)
+  
+},30000)
  
-}
+}})}
+
+
 //////////////////////////////////////////////////////////////////////////////////////////
  //creat spaceship function 
 function spaceshipCreator(img,ctx,sound,ctx2,x,y) {
@@ -103,15 +142,15 @@ let laserInterval = setInterval(() => {
      clearInterval(laserInterval)
        
  }else{
-       laserCaunter-=10}
+       laserCaunter-=30}
 ctx.fillStyle ="red"
-ctx.clearRect(laserX+15,laserCaunter+10,3,5)
+ctx.clearRect(laserX+15,laserCaunter+30,3,5)
 ctx.fillRect(laserX+15,laserCaunter,3,5)
 ctx.stroke();
 //calling checkExplosion function 
   
  checkExplosion(enemies,laserX,laserCaunter)
-      }, 50);
+      }, 30);
 
    }
 ////////////////////////////////////////////////////////
@@ -127,7 +166,7 @@ let theEnemy = enemies[enemIndex]///
 
 
  let enemyInterval= setInterval(() => {
-  theEnemy.y += 10 
+  theEnemy.y += 5 
     // console.log(enemies);
     somCtx.clearRect(theEnemy.x-10,theEnemy.y-30,60,50)
     somCtx.drawImage(enemyimg,0,0,700,400,theEnemy.x,theEnemy.y,50,40)
@@ -135,10 +174,33 @@ let theEnemy = enemies[enemIndex]///
 if (theEnemy.y==500 ) {
   clearInterval( enemyInterval)
 }
-    }, 100);
+    }, 50);
     enemies[enemIndex].interval = enemyInterval
     }
+//////////////////////////////////////////////////////////////////////////////////
+function meteorCreator(meteoresImg,somCtx, meteorX,meteorY){
+  meteorObj = {
+    x:meteorX,
+    y:meteorY-5,
+    ctx: somCtx
+  }
+  let meteorIndex = meteors.push(meteorObj)-1
+  let theMeteor = meteors[meteorIndex]
 
+  let meteorInterval =setInterval(()=>{
+    
+    theMeteor.y+=5
+    somCtx.clearRect(theMeteor.x-20,theMeteor.y-30,244,100 )
+    somCtx.drawImage(meteoresImg,0,0,500,400,theMeteor.x,theMeteor.y,224,244)
+    if (theMeteor.y ==500){
+      clearInterval( meteorInterval)
+    }
+    meteors[meteorIndex].interval =meteorInterval
+
+  },50);
+
+
+}
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -173,14 +235,11 @@ for (let i = 0; i < enemies.length; i++) {
 
  }   
 }
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////
 function checkInside(enX , enY ,enWidth, enHeight, pointX , pointY ){
 return (pointX >= enX && pointX <= enX + enWidth) && (pointY >= enY && pointY <= enY + enHeight )
     }
 ///////////////////////////////////////////////////////////
-
-
 function drawExplosion(img,explosionContext,x,y,exploionsound) {
   
    
@@ -195,70 +254,24 @@ function drawExplosion(img,explosionContext,x,y,exploionsound) {
 }
 
 
+//////////////////////////////////////////////////////////////////////
+function enemyBullets(enemyBullet,somCtx, bulletX){
+  meteorObj = {
+    x:bulletX,
+    y:-5,
+    ctx: somCtx
+  }
+  let bulletIndex = bullets.push(meteorObj)-1
+  let theBullet = bullets[bulletIndex]
 
-//  function checkMyshipXplosion(myShipX,myShipY) {
-//   let enWidth = 50
-//   let enHeight = 40
-//   let myShipWidth = 40
-//   let myShipHeight = 30
-  
-// for (let i = 0; i < enemies.length; i++) {
- 
-//   let enX= enemies[i].x
-//   let enY = enemies[i].y
-//   let topLeftCornerCheck = checkInside(enX , enY ,enWidth, enHeight, laserX, laserY)
-//   let topRightCornerCheck = checkInside(enX , enY ,enWidth, enHeight, laserX + myShipWidth, laserY)
-//   let buttomRightCornerCheck = checkInside(enX , enY ,enWidth, enHeight, laserX + myShipWidth, laserY + myShipHeight)
-//   let buttomLeftCornerCheck = checkInside(enX , enY ,enWidth, enHeight, laserX , laserY + myShipHeight)
-//   if(topLeftCornerCheck || topRightCornerCheck||buttomRightCornerCheck||buttomLeftCornerCheck){
-  
-//     //array.splice(i,1)
-//     clearInterval(enemies[i].interval)
-   
-//     enemies[i].ctx.clearRect(enX, enY, enWidth, enHeight)
-
-//     drawExplosion(explosionenImg,explosionCtx,enX,enY,exploionsound)
-
-//     enemies.splice(i,1)
-   
+  let bulletInterval =setInterval(()=>{
     
-    
-//   } 
+    theBullet.y+=10
+    somCtx.clearRect(theBullet.x-20,theBullet.y-30,20,20 )
+    somCtx.drawImage(enemyBullet,0,0,100,100,theBullet.x,theBullet.y,20,20)
+    if (theBullet.y ==500){
+      clearInterval( bulletInterval)
+    }
+    bullets[bulletIndex].interval =bulletInterval
 
-//  }   
-//   }
-////////////////////////////////////////
-// function exploSaund(exploionsound,status) {
-//   if (status==true){
-//     exploionsound.currentTime =0;
-//     exploionsound.play()
-//     log
-//   }
-  
-// }
-/////////////////////////////////////////////////////////////////
-// function checkExplosion (laserX,laserY,enX,enY) {
-      
-//       let enWidth = 30
-//       let enHeight = 30
-//       let laserWidth = 3
-//       let laserHeight = 5
-//       let topLeftCornerCheck = checkInside(enX , enY ,enWidth, enHeight, laserX, laserY)
-
-//       let topRightCornerCheck = checkInside(enX , enY ,enWidth, enHeight, laserX + laserWidth, laserY)
-//       let buttomRightCornerCheck = checkInside(enX , enY ,enWidth, enHeight, laserX + laserWidth, laserY + laserHeight)
-//       let buttomLeftCornerCheck = checkInside(enX , enY ,enWidth, enHeight, laserX , laserY + laserHeight)
-
-//       if(topLeftCornerCheck || topRightCornerCheck || buttomRightCornerCheck || buttomLeftCornerCheck){
-//         status = 'explosion'
-//       } 
-
-      
-//     }
-
-
-
-      
-       
-
-       
+  },30);}
