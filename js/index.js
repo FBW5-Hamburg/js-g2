@@ -42,6 +42,13 @@ container.append(exploionsound)
     sound.setAttribute("controls","none")
     sound.style.display ="none"
     container.append(sound)
+//////////////////////////////////////////////////////
+let gameMusic = document.createElement("audio")
+gameMusic.src = './audi/music.mp3'
+gameMusic.setAttribute("preload","auto")
+gameMusic.setAttribute("controls","none")
+gameMusic.style.display ="none"
+    container.append(gameMusic)
 
 ///////////////////////////////////////////
 //declering explosion img  
@@ -52,6 +59,7 @@ container.append(exploionsound)
 let startBtn =document.querySelector('#startBtn')
 startBtn.addEventListener('click',function (e) {
   startBtn.classList.add('startBtn')
+  gameMusic.play()
 ////////////////////////////////////////////////////////////////////////
 //declaring space ship image 
 
