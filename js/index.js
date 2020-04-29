@@ -4,18 +4,18 @@ var explosionenImg = null
 var explosionCtx = null
 var exploionsound = null
 var scoreCounter = 0
-var highestScoreArr = []
+var bullets = []
 var spaceshipCreatorCheck = true
-var enemyShipInterval;
+var enemyShipInterval
+var meteorInterval
+var status = "notExpilo"
 // var status = false
 
 window.onload = function () {
   //get container bei id 
   let container = document.querySelector('.container')
   ////////////////////////////////////////////////////////////
-  let score = document.querySelector('#score')
-  let HScore= document.querySelector('#HScore')
-console.log(score.innerText);
+  var score = document.querySelector('#score')
 
 
   /////////////////////////////////////////////
@@ -62,10 +62,10 @@ console.log(score.innerText);
   // var enemyBullet = document.createElement('img')
   // enemyBullet.src = './img/laser0.png'
   // start button declering + add event listener
-  //////////////////////////////////////////////////////////////
   let startBtn = document.querySelector('#startBtn')
   startBtn.addEventListener('click', function (e) {
-    startBtn.classList.add('startBtn')
+    if(spaceshipCreatorCheck == true){
+      startBtn.classList.add('startBtn')
     /////////////////////////////////////////////////////////////////
     gameMusic.play()
     ////////////////////////////////////////////////////////////////////////
@@ -77,6 +77,7 @@ console.log(score.innerText);
       gameCanvas3.onmousemove = e => {
         spaceshipCreator(spacrShipImg, context, sound, context, e.pageX, e.pageY)
         spaceshipExplosion(e.pageX, e.pageY, context, enemyShipInterval)
+        spaceshipExplosion1(e.pageX, e.pageY, context, meteorInterval)
       }
     }
     /////////////////////////////////////////////////////////////////////
@@ -86,44 +87,41 @@ console.log(score.innerText);
     enemyimg.onload = () => {
       enemyShipInterval = setInterval(() => {
         let x = Math.floor(Math.random() * Math.floor(960));
-        enemycreator(enemyimg, context2, x,explosionCtx)
-        
+        enemycreator(enemyimg, context2, x)
+        //  enemyBullets(enemyBullet,context2,x)
       }, 1500);
+    }
+    
 
+    } else {
+     clearInterval (meteorInterval)
+     clearInterval(enemyShipInterval)
     }
     /////////////////////////////////////////////////////////
 
-    
+
 
     ////////////////////////////////////////////////////////
     let meteoresImg = document.createElement('img')
     meteoresImg.src = './img/Rock0.png'
     meteoresImg.onload = () => {
-      setInterval(() => {
+      meteorInterval = setInterval(() => {
         let x = Math.floor(Math.random() * Math.floor(960))
         meteorCreator(meteoresImg, explosionCtx, x, 0)
 
       }, 7000)
-      setInterval(() => {
-        // let x = Math.floor(Math.random() * Math.floor(960))
-        meteorCreator(meteoresImg, explosionCtx, 20, -50)
-
-      }, 30000)
-      setInterval(() => {
-        // let x = Math.floor(Math.random() * Math.floor(960))
-        meteorCreator(meteoresImg, explosionCtx, 600, -100)
-
-      }, 30000)
-      setInterval(() => {
-        // let x = Math.floor(Math.random() * Math.floor(960))
-        meteorCreator(meteoresImg, explosionCtx, 150, -150)
-
-      }, 30000)
-      setInterval(() => {
-        // let x = Math.floor(Math.random() * Math.floor(960))
-        meteorCreator(meteoresImg, explosionCtx, 300, 0)
-
-      }, 30000)
+     
+      if(spaceshipCreatorCheck != false){
+        let meteorGroup = setInterval(() => {
+          // let x = Math.floor(Math.random() * Math.floor(960))
+          meteorCreator(meteoresImg, explosionCtx, 20, -50)
+          meteorCreator(meteoresImg, explosionCtx, 600, -100)
+          meteorCreator(meteoresImg, explosionCtx, 150, -150)
+          meteorCreator(meteoresImg, explosionCtx, 300, 0)
+        }, 30000)
+      } else {
+        clearInterval(meteorGroup)
+      }
 
     }
   })
@@ -173,7 +171,7 @@ function LaserShoot(laserX, laserY, ctx) {
 
 }
 ////////////////////////////////////////////////////////
-function enemycreator(enemyimg, somCtx, enX,ctx) {
+function enemycreator(enemyimg, somCtx, enX) {
 
   enemObj = {
     x: enX,
@@ -191,15 +189,9 @@ function enemycreator(enemyimg, somCtx, enX,ctx) {
     if (theEnemy.y == 500) {
       clearInterval(enemyInterval)
     }
-   enemyBullets(ctx,theEnemy.x,theEnemy.y)
-  }, 50); 
-
-
-  
+  }, 50);
   enemies[enemIndex].interval = enemyInterval
-  
 }
-
 //////////////////////////////////////////////////////////////////////////////////
 function meteorCreator(meteoresImg, somCtx, meteorX, meteorY) {
   meteorObj = {
@@ -227,7 +219,7 @@ function meteorCreator(meteoresImg, somCtx, meteorX, meteorY) {
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-function checkExplosion(array,laserX, laserY) {
+function checkExplosion(array, laserX, laserY) {
 
   let enWidth = 50
   let enHeight = 40
@@ -254,25 +246,6 @@ function checkExplosion(array,laserX, laserY) {
 
       scoreCounter = scoreCounter + 1
       score.innerText = scoreCounter
-      //////////////////////////////////////
-      //using local storage to show the hiest score
-      let hsArr=highestScoreArr
-      hsArr.push(score.innerText)
-      console.log(hsArr);
-      let hiScoreJson= JSON.stringify(hsArr)
-      localStorage.setItem('hiScore',hiScoreJson)
-      
-      
-      
-
-    }
-    let jsonObj=localStorage.getItem('hiScore')
-    if (jsonObj!=null) {
-      let convertedArr=this.JSON.parse(jsonObj)
-      console.log(convertedArr.length);
-      
-
-      
     }
 
   }
@@ -294,11 +267,39 @@ function spaceshipExplosion(shipX, shipY, ctx, enemyShipInterval) {
       console.log("crash");
       spaceshipCreatorCheck = false
       clearInterval(enemyShipInterval)
+    
       endGame.classList.add('endGame1')
 
     }
   }
 }
+//////////////////////////////////////////////////////////////////////////////////////////
+function spaceshipExplosion1(shipX, shipY, ctx, meteorInterval) {
+  let meWidth = 50
+  let meHeight = 70
+  let shipWidth = 40
+  let shipHeight = 35
+  for (let i = 0; i < meteors.length; i++) {
+    let meX = meteors[i].x
+    let meY = meteors[i].y
+    let topLeftCornerCheck = checkInside(meX, meY, meWidth, meHeight, shipX, shipY)
+    let topRightCornerCheck = checkInside(meX, meY, meWidth, meHeight, shipX + shipWidth, shipY)
+    let buttomRightCornerCheck = checkInside(meX, meY, meWidth, meHeight, shipX + shipWidth, shipY + shipHeight)
+    let buttomLeftCornerCheck = checkInside(meX, meY, meWidth, meHeight, shipX, shipY + shipHeight)
+    if (topLeftCornerCheck || topRightCornerCheck || buttomRightCornerCheck || buttomLeftCornerCheck) {
+      console.log("crash");
+      spaceshipCreatorCheck = false
+      
+      clearInterval(meteorInterval)
+      endGame.classList.add('endGame1')
+
+    }
+  }
+  if(spaceshipCreatorCheck == false){
+    clearInterval(meteorInterval)
+  }
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 function checkInside(enX, enY, enWidth, enHeight, pointX, pointY) {
   return (pointX >= enX && pointX <= enX + enWidth) && (pointY >= enY && pointY <= enY + enHeight)
@@ -311,25 +312,29 @@ function drawExplosion(img, explosionContext, x, y, exploionsound) {
   }, 1000);
   exploionsound.currentTime = 0
   exploionsound.play()
+
 }
+
+
 //////////////////////////////////////////////////////////////////////
-function enemyBullets(somCtx,bulletX,bulletY) {
+function enemyBullets(enemyBullet, somCtx, bulletX) {
+  meteorObj = {
+    x: bulletX,
+    y: -5,
+    ctx: somCtx
+  }
+  let bulletIndex = bullets.push(meteorObj) - 1
+  let theBullet = bullets[bulletIndex]
 
-  
-  let bulletCaunter = bulletY
   let bulletInterval = setInterval(() => {
-    if (bulletCaunter == 0) {
+
+    theBullet.y += 10
+    somCtx.clearRect(theBullet.x - 20, theBullet.y - 30, 20, 20)
+    somCtx.drawImage(enemyBullet, 0, 0, 100, 100, theBullet.x, theBullet.y, 20, 20)
+    if (theBullet.y == 500) {
       clearInterval(bulletInterval)
-    } else {
-      bulletCaunter =bulletCaunter+15
     }
-    somCtx.fillStyle = "red"
-    somCtx.clearRect(bulletX + 20, bulletCaunter-50, 5, 5)
-    somCtx.fillRect(bulletX + 20, bulletCaunter+50, 5, 5)
-    somCtx.stroke();
-    //calling checkExplosion function 
+    bullets[bulletIndex].interval = bulletInterval
 
-    // checkExplosion(enemies, laserX, bulletCaunter)
-  }, 20);
-
+  }, 30);
 }
