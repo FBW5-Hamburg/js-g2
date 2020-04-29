@@ -4,6 +4,8 @@ var explosionCtx = null
 var exploionsound = null
 var scoreCounter = 0
 var spaceshipCreatorCheck = true
+var enemyShipInterval ; 
+//var endGame
 // var laserArr=[]
 // var status = false
 
@@ -47,11 +49,13 @@ window.onload = function () {
   //declering explosion img  
   explosionenImg = document.createElement('img')
   explosionenImg.src = './img/explosion0.png'
+ 
   //////////////////////////////////////////////////////////////////////
   // start button declering + add event listener
   let startBtn = document.querySelector('#startBtn')
   startBtn.addEventListener('click', function (e) {
     startBtn.classList.add('startBtn')
+
     ////////////////////////////////////////////////////////////////////////
     //declaring space ship image 
 
@@ -68,28 +72,29 @@ window.onload = function () {
     let enemyimg = document.createElement('img')
     enemyimg.src = './img/ship4.png'
     enemyimg.onload = () => {
-      var enemyShipInterval = setInterval(() => {
+       enemyShipInterval = setInterval(() => {
         let x = Math.floor(Math.random() * Math.floor(960));
         enemycreator(enemyimg, context2, x)
       }, 1500);
     }
-  })
+    ///////////////////////////////////////////////////////////////////////
+  /////////////////declering Game over img /////////////////
 
+  
+  })
+   
+  let endGame = document.querySelector('#endGame')
+  //endGame.setAttribute('display', 'none')
 }
 //////////////////////////////////////////////////////////////////////////////////////////
 //creat spaceship function
 function spaceshipCreator(img, ctx, sound, ctx2, x, y) {
-
-  //let spaceShipInterval = setInterval(() => {
-    
-   
+       
   if (true) {
     ctx.clearRect(0, 0, 1000, 500)
     ctx.drawImage(img, 40, 30, 300, 200, x, y, 40, 30)
 
    } 
-
-   //}, 1);
   //////////////////////////////////////////////////////////////   
   //caling laser shoot function + add Event 
   document.onclick = (e => {
@@ -187,7 +192,7 @@ function checkExplosion(array, laserX, laserY) {
 
 ////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////spaceShipExplosion/////////////////////////////////////
-function spaceshipExplosion(shipX, shipY, ctx,enemyShipInterval) {
+function spaceshipExplosion(shipX, shipY, ctx, enemyShipInterval) {
   let enWidth = 50
   let enHeight = 40
   let shipWidth = 40
@@ -203,13 +208,16 @@ function spaceshipExplosion(shipX, shipY, ctx,enemyShipInterval) {
       console.log("crash");
       spaceshipCreatorCheck = false
       //clearInterval(spaceShipInterval)
-
+      
       clearInterval(enemyShipInterval)
-      ctx.fillStyle = "red"
-      ctx.font = "80px Verdana"
-      ctx.fillText("GAME OVER", 250, 250)
+      //ctx.clearRect(shipX, shipY, shipWidth, shipHeight)
+      endGame.classList.add('endGame1')
+      // ctx.fillStyle = "red"
+      // ctx.font = "80px Verdana"
+      // ctx.fillText("GAME OVER", 250, 250)
 
     }
+    
   }
 }
 
