@@ -55,24 +55,29 @@ Table of contents
 
 2.1 Work plan
 
- 
+        a.    The player ship
 
-            a.       Stat Button
+        b.    Laser shoot
 
-            b.       The player ship
+        c.    Enemy ships
 
-            c.       Laser shoot
+        d.    Destroying enemy ships
 
-            d.       Enemy ships
+        e.     Background
 
-            e.       Destroying enemy ships
+        f.    Stat Button
 
-            f.        Background
+        g.     Score
 
-            g.       Score
-
-            h.       Bug fixing  ,
+        h.     Bug fixing  
 
 2.2 Time table:
+        At least tow tasks were supposed to be completed daily .
+        but because of technical proplem with Abdolrahman ,
+        we were unable to stick to the Time table
+
+
+2.3 Distribution of tasks:
+       
             
 
