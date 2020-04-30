@@ -24,7 +24,7 @@ Table of contents
        2.3 Distribution of tasks
 
 3-The used programming languages
-
+//////////////////////////////////////////////////////////////////////
 *Introduction 
 
 1.1   purpose :
@@ -78,6 +78,27 @@ Table of contents
 
 
 2.3 Distribution of tasks:
+       
+
+3-The used programming languages:
+       3.1  Javascript
+       3.2  css
+       3.3 HTML5
+
+Code Snippet:
+        we relied on Function to  write this code
+        canvas
+        Layers
+        Es6 Mehtod 
+        
+
+           
+
+
+
+
+
+
        
             
 
