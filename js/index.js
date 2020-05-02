@@ -2,6 +2,7 @@ var enemies = []
 var meteors = []
 var explosionenImg = null
 var explosionCtx = null
+var context=null
 var exploionsound = null
 var scoreCounter = 0
 var bullets = []
@@ -18,7 +19,7 @@ window.onload = function () {
   /////////////////////////////////////////////
   //declering layer1 canvas
   var gameCanvas = document.querySelector('#gameCanvas')
-  var context = gameCanvas.getContext('2d')
+   context = gameCanvas.getContext('2d')
   /////////////////////////////////////////////////////////
   //declering layer2 canvas
   var gameCanvas2 = document.querySelector('#gameCanvas2')
@@ -106,10 +107,17 @@ window.onload = function () {
 //////////////////////////////////////////////////////////////////////////////////////////
 //creat spaceship function 
 function spaceshipCreator(img, ctx, sound, ctx2, x, y) {
+  let shipTot= spaceshipCreatorCheck
   if (true) {
     ctx.clearRect(0, 0, 1000, 500)
     ctx.drawImage(img, 40, 30, 300, 200, x, y, 40, 30)
   }
+  if (shipTot==false) {
+    ctx.clearRect(x,y,40,30)
+    
+  }
+ 
+  
   //////////////////////////////////////////////////////////////   
   //caling laser shoot function + add Event 
   document.onclick = (e => {
@@ -218,10 +226,13 @@ function spaceshipExplosion(shipX, shipY, ctx, enemyShipInterval) {
     let buttomRightCornerCheck = checkInside(enX, enY, enWidth, enHeight, shipX + shipWidth, shipY + shipHeight)
     let buttomLeftCornerCheck = checkInside(enX, enY, enWidth, enHeight, shipX, shipY + shipHeight)
     if (topLeftCornerCheck || topRightCornerCheck || buttomRightCornerCheck || buttomLeftCornerCheck) {
+      drawExplosion(explosionenImg, explosionCtx, shipX, shipY, exploionsound)
       console.log("crash");
       spaceshipCreatorCheck = false
       clearInterval(enemyShipInterval)
-      endGame.classList.add('endGame1')
+      setTimeout(()=>{endGame.classList.add('endGame1')},1000)
+      
+      
     }
     if(spaceshipCreatorCheck == false){
       clearInterval(enemyShipInterval)
@@ -242,10 +253,11 @@ function spaceshipExplosion1(shipX, shipY, ctx, meteorInterval) {
     let buttomRightCornerCheck = checkInside(meX, meY, meWidth, meHeight, shipX + shipWidth, shipY + shipHeight)
     let buttomLeftCornerCheck = checkInside(meX, meY, meWidth, meHeight, shipX, shipY + shipHeight)
     if (topLeftCornerCheck || topRightCornerCheck || buttomRightCornerCheck || buttomLeftCornerCheck) {
+      drawExplosion(explosionenImg, context, shipX, shipY, exploionsound)
       console.log("crash");
       spaceshipCreatorCheck = false
       clearInterval(meteorInterval)
-      endGame.classList.add('endGame1')
+      setTimeout(()=>{endGame.classList.add('endGame1')},1000)
     }
   }
   if(spaceshipCreatorCheck == false){
