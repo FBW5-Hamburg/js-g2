@@ -139,6 +139,7 @@ function LaserShoot(laserX, laserY, ctx) {
   }, 30);
 }
 ////////////////////////////////////////////////////////
+
 function enemycreator(enemyimg, somCtx, enX) {
   enemObj = {
     x: enX,
