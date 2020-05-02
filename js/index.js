@@ -248,7 +248,7 @@ function spaceshipExplosion(shipX, shipY, ctx, enemyShipInterval) {
   let enWidth = 50
   let enHeight = 40
   let shipWidth = 40
-  let shipHeight = 35
+  let shipHeight = 30
   for (let i = 0; i < enemies.length; i++) {
     let enX = enemies[i].x
     let enY = enemies[i].y
@@ -275,7 +275,7 @@ function spaceshipExplosion1(shipX, shipY, ctx, meteorInterval) {
   let meWidth = 50
   let meHeight = 70
   let shipWidth = 40
-  let shipHeight = 35
+  let shipHeight = 30
   for (let i = 0; i < meteors.length; i++) {
     let meX = meteors[i].x
     let meY = meteors[i].y
@@ -300,7 +300,7 @@ function spaceshipExplosion2(shipX, shipY,meteorInterval,enemyShipInterval) {
   let bulletWidth = 5
   let bulletHeight = 5
   let shipWidth = 40
-  let shipHeight = 35
+  let shipHeight = 30
   for (let i = 0; i < bullets.length; i++) {
     let bullX = bullets[i].x
     let bullY = bullets[i].y
