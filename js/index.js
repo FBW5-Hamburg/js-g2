@@ -74,7 +74,12 @@ window.onload = function () {
         spaceshipCreator(spacrShipImg, context, sound, context, e.pageX, e.pageY)
         spaceshipExplosion(e.pageX, e.pageY, context, enemyShipInterval)
         spaceshipExplosion1(e.pageX, e.pageY, context, meteorInterval)
+        spaceshipExplosion2(e.pageX, e.pageY,meteorInterval,enemyShipInterval)
       }
+      spaceshipCreator(spacrShipImg, context, sound, context, e.pageX, e.pageY)
+        spaceshipExplosion(e.pageX, e.pageY, context, enemyShipInterval)
+        spaceshipExplosion1(e.pageX, e.pageY, context, meteorInterval)
+        spaceshipExplosion2(e.pageX, e.pageY,meteorInterval,enemyShipInterval)
     }
     /////////////////////////////////////////////////////////////////////
     //declaring enemy image
@@ -147,7 +152,7 @@ function LaserShoot(laserX, laserY, ctx) {
   }, 30);
 }
 ////////////////////////////////////////////////////////
-
+//enemycreator= creating the enemy ships 
 function enemycreator(enemyimg, somCtx, enX) {
   enemObj = {
     x: enX,
@@ -163,12 +168,14 @@ function enemycreator(enemyimg, somCtx, enX) {
     somCtx.drawImage(enemyimg, 0, 0, 700, 400, theEnemy.x, theEnemy.y, 50, 40)
     if (theEnemy.y == 500) {
       clearInterval(enemyInterval)
+      theEnemy.y=0
     }
   }, 50);
   enemyBullets(somCtx,theEnemy.x,theEnemy.y)
   enemies[enemIndex].interval = enemyInterval
 }
 //////////////////////////////////////////////////////////////////////////////////
+//meteorCreator= creating the meteores
 function meteorCreator(meteoresImg, somCtx, meteorX, meteorY) {
   meteorObj = {
     x: meteorX,
@@ -183,11 +190,36 @@ function meteorCreator(meteoresImg, somCtx, meteorX, meteorY) {
     somCtx.drawImage(meteoresImg, 0, 0, 500, 400, theMeteor.x, theMeteor.y, 224, 244)
     if (theMeteor.y == 500) {
       clearInterval(meteorInterval)
+      theMeteor.y=0
     }
     meteors[meteorIndex].interval = meteorInterval
   }, 50);
 }
+/////////////////////////////////////////////////////////////////////////////////////////////////
+//enemyBullets= creating the bullets of enemys ship 
+function enemyBullets(somCtx,bulletX,bulletY) {
+  bulletObj = {
+    x: bulletX,
+    y: bulletY ,
+    ctx: somCtx
+  }
+  let bulletIndex = bullets.push(bulletObj) - 1
+  let theBull = bullets[bulletIndex]
+  let bulletInterval = setInterval(() => {
+    if (theBull.y == 500) {
+      clearInterval(bulletInterval)
+    } else {
+      theBull.y =theBull.y+15
+    }
+    somCtx.fillStyle = "red"
+    somCtx.clearRect(theBull.x + 20, theBull.y-15, 5, 5)
+    somCtx.fillRect(theBull.x + 20, theBull.y+15, 5, 5)
+    somCtx.stroke();
+  }, 50);
+  bullets[bulletIndex].interval = bulletInterval
+}
 //////////////////////////////////////////////////////////////////////////////////////////////////
+//function checkExplosion= if the Enemyspace ships touch the laser they  will be explosion 
 function checkExplosion(array, laserX, laserY) {
   let enWidth = 50
   let enHeight = 40
@@ -201,18 +233,17 @@ function checkExplosion(array, laserX, laserY) {
     let buttomRightCornerCheck = checkInside(enX, enY, enWidth, enHeight, laserX + laserWidth, laserY + laserHeight)
     let buttomLeftCornerCheck = checkInside(enX, enY, enWidth, enHeight, laserX, laserY + laserHeight)
     if (topLeftCornerCheck || topRightCornerCheck || buttomRightCornerCheck || buttomLeftCornerCheck) {
-      //array.splice(i,1)
       clearInterval(enemies[i].interval)
       enemies[i].ctx.clearRect(enX, enY, enWidth, enHeight)
       drawExplosion(explosionenImg, explosionCtx, enX, enY, exploionsound)
       enemies.splice(i, 1)
-      //drawExplosion()
       scoreCounter = scoreCounter + 1
       score.innerText = scoreCounter
     }
   }
 }
 ///////////////////////////////////////////////////////////
+// spaceshipExplosion =if the space ship touch the enemyShips it will be explosion 
 function spaceshipExplosion(shipX, shipY, ctx, enemyShipInterval) {
   let enWidth = 50
   let enHeight = 40
@@ -227,7 +258,6 @@ function spaceshipExplosion(shipX, shipY, ctx, enemyShipInterval) {
     let buttomLeftCornerCheck = checkInside(enX, enY, enWidth, enHeight, shipX, shipY + shipHeight)
     if (topLeftCornerCheck || topRightCornerCheck || buttomRightCornerCheck || buttomLeftCornerCheck) {
       drawExplosion(explosionenImg, explosionCtx, shipX, shipY, exploionsound)
-      console.log("crash");
       spaceshipCreatorCheck = false
       clearInterval(enemyShipInterval)
       setTimeout(()=>{endGame.classList.add('endGame1')},1000)
@@ -240,6 +270,7 @@ function spaceshipExplosion(shipX, shipY, ctx, enemyShipInterval) {
   }
 }
 //////////////////////////////////////////////////////////////////////////////////////////
+// spaceshipExplosion1 =if the space ship touch the Meteor it will be explosion 
 function spaceshipExplosion1(shipX, shipY, ctx, meteorInterval) {
   let meWidth = 50
   let meHeight = 70
@@ -254,7 +285,6 @@ function spaceshipExplosion1(shipX, shipY, ctx, meteorInterval) {
     let buttomLeftCornerCheck = checkInside(meX, meY, meWidth, meHeight, shipX, shipY + shipHeight)
     if (topLeftCornerCheck || topRightCornerCheck || buttomRightCornerCheck || buttomLeftCornerCheck) {
       drawExplosion(explosionenImg, context, shipX, shipY, exploionsound)
-      console.log("crash");
       spaceshipCreatorCheck = false
       clearInterval(meteorInterval)
       setTimeout(()=>{endGame.classList.add('endGame1')},1000)
@@ -263,6 +293,33 @@ function spaceshipExplosion1(shipX, shipY, ctx, meteorInterval) {
   if(spaceshipCreatorCheck == false){
     clearInterval(meteorInterval)
   }
+}
+/////////////////////////////////////////////////////////////////////////////////////////////////
+// spaceshipExplosion2 =if the space ship touch the Enemy bullets it will be explosion 
+function spaceshipExplosion2(shipX, shipY,meteorInterval,enemyShipInterval) {
+  let bulletWidth = 5
+  let bulletHeight = 5
+  let shipWidth = 40
+  let shipHeight = 35
+  for (let i = 0; i < bullets.length; i++) {
+    let bullX = bullets[i].x
+    let bullY = bullets[i].y
+    let topLeftCornerCheck = checkInside(shipX, shipY, shipWidth, shipHeight, bullX, bullY)
+    let topRightCornerCheck = checkInside(shipX, shipY, shipWidth, shipHeight, bullX + bulletWidth, bullY)
+    let buttomRightCornerCheck = checkInside(shipX, shipY, shipWidth, shipHeight, bullX + bulletWidth, bullY + bulletHeight)
+    let buttomLeftCornerCheck = checkInside(shipX, shipY, shipWidth, shipHeight, bullX, bullY + bulletWidth)
+    if (topLeftCornerCheck || topRightCornerCheck || buttomRightCornerCheck || buttomLeftCornerCheck) {
+      
+      drawExplosion(explosionenImg, context, shipX, shipY, exploionsound)
+      console.log("crash");
+      spaceshipCreatorCheck = false
+      clearInterval(meteorInterval)
+      clearInterval(enemyShipInterval)
+      setTimeout(()=>{endGame.classList.add('endGame1')},1000)
+      
+    }
+  }
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -277,24 +334,4 @@ function drawExplosion(img, explosionContext, x, y, exploionsound) {
   }, 1000);
   exploionsound.currentTime = 0
   exploionsound.play()
-}
-//////////////////////////////////////////////////////////////////////
-function enemyBullets(somCtx,bulletX,bulletY) {
-  
-  let bulletCaunter = bulletY
-  let bulletInterval = setInterval(() => {
-    if (bulletCaunter == 500) {
-      clearInterval(bulletInterval)
-    } else {
-      bulletCaunter =bulletCaunter+15
-    }
-    somCtx.fillStyle = "red"
-    somCtx.clearRect(bulletX + 20, bulletCaunter-15, 5, 5)
-    somCtx.fillRect(bulletX + 20, bulletCaunter+15, 5, 5)
-    somCtx.stroke();
-    //calling checkExplosion function 
-
-    // checkExplosion(enemies, laserX, bulletCaunter)
-  }, 50);
-
 }
